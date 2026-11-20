@@ -2,9 +2,11 @@ import { useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
-import './App.css'
+import './App.css';
+import MonacoPythonEditor from './components/MonacoPythonEditor';
 
 function App() {
+  // Render the Monaco Python editor below the hero section
   const [count, setCount] = useState(0)
 
   return (
@@ -31,6 +33,7 @@ function App() {
       </section>
 
       <div className="ticks"></div>
+      <MonacoPythonEditor />
 
       <section id="next-steps">
         <div id="docs">
@@ -114,6 +117,7 @@ function App() {
       </section>
 
       <div className="ticks"></div>
+      <MonacoPythonEditor />
       <section id="spacer"></section>
     </>
   )
