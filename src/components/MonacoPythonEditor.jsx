@@ -7,13 +7,13 @@ const defaultCode = `def greet(name):
 
 greet("PolyglotMesh")`;
 
-const MonacoPythonEditor = () => {
+const MonacoPythonEditor = ({ language = 'python', code, onChange }) => {
   return (
     <div className="editor-container" style={{ height: '70vh', width: '100%' }}>
       <Editor
         height="100%"
-        defaultLanguage="python"
-        defaultValue={defaultCode}
+        language={language}
+        value={code}
         theme="vs-dark"
         options={{
           lineNumbers: 'on',
@@ -22,6 +22,7 @@ const MonacoPythonEditor = () => {
           automaticLayout: true,
           scrollBeyondLastLine: false,
         }}
+        onChange={(value) => onChange(value)}
       />
     </div>
   );

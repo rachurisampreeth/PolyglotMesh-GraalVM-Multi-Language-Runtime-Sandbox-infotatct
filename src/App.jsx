@@ -1,126 +1,62 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useState } from 'react';
 import './App.css';
-import MonacoPythonEditor from './components/MonacoPythonEditor';
+import MonacoEditor from './components/MonacoPythonEditor';
 
 function App() {
-  // Render the Monaco Python editor below the hero section
-  const [count, setCount] = useState(0)
+  const [activeLang, setActiveLang] = useState('python');
+  const [pythonCode, setPythonCode] = useState(`def greet(name):\n    print("Hello, " + name)\n\n    greet("PolyglotMesh")`);
+  const [javaCode, setJavaCode] = useState(`public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello PolyglotMesh");\n    }\n}`);
+  const [jsCode, setJsCode] = useState(`function greet(name) {\n  console.log("Hello, " + name);\n}\n\n  greet("PolyglotMesh");`);
+
+  const getCode = () => {
+    switch (activeLang) {
+      case 'java':
+        return javaCode;
+      case 'javascript':
+        return jsCode;
+      default:
+        return pythonCode;
+    }
+  };
+
+  const setCode = (value) => {
+    switch (activeLang) {
+      case 'java':
+        setJavaCode(value);
+        break;
+      case 'javascript':
+        setJsCode(value);
+        break;
+      default:
+        setPythonCode(value);
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-      <MonacoPythonEditor />
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <MonacoPythonEditor />
-      <section id="spacer"></section>
-    </>
-  )
+    <div className="app-container" style={{ padding: '1rem', backgroundColor: '#1e1e1e', minHeight: '100vh', color: '#fff' }}>
+      {/* Language Tabs */}
+      <div className="tabs" style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+        {['python', 'java', 'javascript'].map((lang) => (
+          <button
+            key={lang}
+            onClick={() => setActiveLang(lang)}
+            style={{
+              padding: '0.5rem 1rem',
+              background: activeLang === lang ? '#333' : '#555',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            {lang.charAt(0).toUpperCase() + lang.slice(1)}
+          </button>
+        ))}
+      </div>
+      {/* Monaco Editor */}
+      <MonacoEditor language={activeLang} code={getCode()} onChange={setCode} />
+    </div>
+  );
 }
 
-export default App
+export default App;
