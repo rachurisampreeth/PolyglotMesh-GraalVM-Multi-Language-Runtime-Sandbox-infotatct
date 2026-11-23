@@ -93,8 +93,7 @@ greet("PolyglotMesh");`);
               >
                 {lang.charAt(0).toUpperCase() + lang.slice(1)}
               </button>
-            ))}
-          </div>
+            ))}</div>
           <MonacoEditor language={activeLang} code={getCode()} onChange={setCode} />
           <button
             onClick={runCode}
@@ -115,6 +114,21 @@ greet("PolyglotMesh");`);
         {/* Right / Console panel */}
         <div className="console-panel">
           <h2 className="console-heading" style={{ marginTop: 0, marginBottom: '0.5rem' }}>Console Output</h2>
+          <button
+            onClick={() => setOutput('')}
+            style={{
+              marginBottom: '0.5rem',
+              padding: '0.3rem 0.8rem',
+              background: '#555',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+            disabled={running}
+          >
+            Clear
+          </button>
           <div className="console-output">
             {output || 'Output will appear here after execution.'}
           </div>
