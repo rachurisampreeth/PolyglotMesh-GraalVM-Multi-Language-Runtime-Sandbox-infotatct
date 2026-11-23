@@ -13,6 +13,12 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } f
 import { api } from './lib/api';
 import { localTemplates, initialInput } from './data/templates';
 
+const DEFAULT_JAVA = `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello from Java!");
+    }
+}`;
+
 const sections = [
   { id: 'workspace', label: 'Workspace', icon: Code2 },
   { id: 'history', label: 'Execution history', icon: Clock3 },
@@ -47,6 +53,7 @@ export default function App() {
   const [language, setLanguage] = useState('python');
   const [activeEditor, setActiveEditor] = useState('python');
   const [code, setCode] = useState('');
+  const [singleCodes, setSingleCodes] = useState({ python: '', javascript: '', java: DEFAULT_JAVA });
   const [pythonCode, setPythonCode] = useState(localTemplates[0].pythonCode);
   const [javascriptCode, setJavascriptCode] = useState(localTemplates[0].javascriptCode);
   const [inputText, setInputText] = useState(JSON.stringify(initialInput, null, 2));
@@ -92,6 +99,9 @@ export default function App() {
     setMode(t.mode);
     setLanguage(t.language || 'python');
     setCode(t.code || '');
+    if (t.mode === 'single' && (t.language === 'python' || t.language === 'javascript')) {
+      setSingleCodes(prev => ({ ...prev, [t.language]: t.code || '' }));
+    }
     setPythonCode(t.pythonCode || '');
     setJavascriptCode(t.javascriptCode || '');
     setActiveEditor(t.mode === 'pipeline' ? 'python' : (t.language || 'python'));
@@ -107,6 +117,9 @@ export default function App() {
     setMode(s.mode);
     setLanguage(s.language || 'python');
     setCode(s.code || '');
+    if (s.mode === 'single' && (s.language === 'python' || s.language === 'javascript')) {
+      setSingleCodes(prev => ({ ...prev, [s.language]: s.code || '' }));
+    }
     setPythonCode(s.pythonCode || '');
     setJavascriptCode(s.javascriptCode || '');
     setActiveEditor(s.mode === 'pipeline' ? 'python' : (s.language || 'python'));
@@ -122,18 +135,32 @@ export default function App() {
        || templates.find((x) => x.mode === nextMode);
     if (t) applyExample(t);
   }
+  function selectSingleLanguage(nextLanguage) {
+    if (nextLanguage === language) return;
+    setSingleCodes(prev => ({ ...prev, [language]: code }));
+    setLanguage(nextLanguage);
+    setActiveEditor(nextLanguage);
+    setCode(singleCodes[nextLanguage] || (nextLanguage === 'java' ? DEFAULT_JAVA : templates.find(t => t.id === `${nextLanguage}-hello`)?.code || ''));
+    setRun(null);
+  }
+
+  const javaPreview = mode === 'single' && language === 'java';
   const editorLanguage = mode === 'pipeline' ? activeEditor : language;
   const editorValue = mode === 'pipeline'
     ? (activeEditor === 'python' ? pythonCode : javascriptCode)
     : code;
   const setEditorValue = (value) => {
-    if (mode === 'single') setCode(value || '');
+    if (mode === 'single') {
+      setCode(value || '');
+      setSingleCodes(prev => ({ ...prev, [language]: value || '' }));
+    }
     else if (activeEditor === 'python') setPythonCode(value || '');
     else setJavascriptCode(value || '');
   };
 
   async function execute() {
     if (running) return;
+    if (javaPreview) return notify('Java is editor-only; select Python or JavaScript to execute', 'info');
     let input;
     try {
       input = JSON.parse(inputText);
@@ -177,6 +204,7 @@ export default function App() {
   });
 
   async function saveSnippet() {
+    if (javaPreview) return notify('Java editing is available; backend script saving supports Python and JavaScript only', 'info');
     if (connection !== 'online') return notify('Start the Java backend to save scripts', 'error');
     const title = window.prompt('Name your script', workspaceName);
     if (title === null) return;
@@ -281,8 +309,8 @@ export default function App() {
                         <button className={mode === 'single' ? 'active' : ''} onClick={() => changeMode('single')}>Single</button>
                         <button className={mode === 'pipeline' ? 'active' : ''} onClick={() => changeMode('pipeline')}><Workflow size={13}/> Pipeline</button>
                       </div>
-                      <button className="secondary-button save-button" onClick={saveSnippet}><Save size={15}/> Save</button>
-                      <button className="primary-button" disabled={running} onClick={execute}><RunIcon isRunning={running}/>{running ? 'Running…' : 'Run code'}<span className="keycap">Ctrl↵</span></button>
+                      <button className="secondary-button save-button" disabled={javaPreview} title={javaPreview ? "Java is editor-only; saving to backend is not supported" : "Save script"} onClick={saveSnippet}><Save size={15}/> Save</button>
+                      <button className="primary-button" disabled={running || javaPreview} title={javaPreview ? "Java syntax highlighting only; execution is not supported" : "Execute code"} onClick={execute}><RunIcon isRunning={running}/>{running ? 'Running…' : 'Run code'}<span className="keycap">Ctrl↵</span></button>
                     </div>
                   </div>
                   <div className="tabs-row">
@@ -290,13 +318,14 @@ export default function App() {
                       <button className={`code-tab ${activeEditor === 'python' ? 'active' : ''}`} onClick={() => setActiveEditor('python')}><span className="lang-dot py"/> pricing.py <span className="code-pill">PY</span></button>
                       <button className={`code-tab ${activeEditor === 'javascript' ? 'active' : ''}`} onClick={() => setActiveEditor('javascript')}><span className="lang-dot js"/> validate.js <span className="code-pill">JS</span></button>
                     </> : <>
-                      <button className={`code-tab ${language === 'python' ? 'active' : ''}`} onClick={() => { setLanguage('python'); setActiveEditor('python'); if (language !== 'python') setCode(templates.find(t => t.id === 'python-hello')?.code || 'result = 42'); }}><span className="lang-dot py"/> main.py</button>
-                      <button className={`code-tab ${language === 'javascript' ? 'active' : ''}`} onClick={() => { setLanguage('javascript'); setActiveEditor('javascript'); if (language !== 'javascript') setCode(templates.find(t => t.id === 'javascript-hello')?.code || 'result = 42;'); }}><span className="lang-dot js"/> main.js</button>
+                       <button className={`code-tab ${language === 'python' ? 'active' : ''}`} onClick={() => selectSingleLanguage('python')}><span className="lang-dot py"/> main.py</button>
+                       <button className={`code-tab ${language === 'javascript' ? 'active' : ''}`} onClick={() => selectSingleLanguage('javascript')}><span className="lang-dot js"/> main.js</button>
+                       <button className={`code-tab ${language === 'java' ? 'active' : ''}`} onClick={() => selectSingleLanguage('java')}><span className="lang-dot java"/> Main.java <span className="code-pill">EDIT</span></button>
                     </>}
-                    <div className="tab-spacer"/><span className="tabs-right"><span className="tabs-dot"/>UTF-8 <span>•</span> {editorLanguage === 'python' ? 'Python 3' : 'JavaScript'}</span>
+                    <div className="tab-spacer"/><span className="tabs-right"><span className="tabs-dot"/>UTF-8 <span>•</span> {editorLanguage === 'python' ? 'Python 3' : editorLanguage === 'java' ? 'Java 21' : 'JavaScript'}</span>
                   </div>
                   <div className="editor-wrap">
-                    <Editor key={`${mode}-${editorLanguage}`} height={editorHeight} language={editorLanguage === 'python' ? 'python' : 'javascript'} value={editorValue} onChange={setEditorValue}
+                    <Editor key={`${mode}-${editorLanguage}`} height={editorHeight} language={editorLanguage} value={editorValue} onChange={setEditorValue}
                       loading={<div className="editor-loading"><LoaderCircle className="spin" size={23}/> Loading Monaco editor…</div>}
                       theme="vs-dark" options={{ fontFamily: "'Cascadia Code', Consolas, 'Courier New', monospace", fontSize: 13.5, lineHeight: 25,
                         fontLigatures: true, minimap: { enabled: false }, scrollBeyondLastLine: false, renderLineHighlight: 'line',
@@ -304,7 +333,7 @@ export default function App() {
                         guides: { indentation: true }, bracketPairColorization: { enabled: true }, tabSize: 4,
                         lineNumbersMinChars: 3, folding: true, wordWrap: 'on' }} />
                   </div>
-                  <div className="editor-footer"><span><span className="footer-dot"/> {mode === 'pipeline' ? 'GraalVM Polyglot Context' : editorLanguage === 'python' ? 'GraalPy Runtime' : 'GraalJS Runtime'}</span><span><ShieldCheck size={13}/> Restricted permissions <span className="footer-sep">|</span> {editorLanguage === 'python' ? 'Python' : 'JavaScript'}</span></div>
+                  <div className="editor-footer"><span><span className="footer-dot"/> {mode === 'pipeline' ? 'GraalVM Polyglot Context' : editorLanguage === 'java' ? 'Java editor · syntax highlighting only' : editorLanguage === 'python' ? 'GraalPy Runtime' : 'GraalJS Runtime'}</span><span><ShieldCheck size={13}/> Restricted permissions <span className="footer-sep">|</span> {editorLanguage === 'python' ? 'Python' : editorLanguage === 'java' ? 'Java · editor only' : 'JavaScript'}</span></div>
                 </div>
 
                 <div className="console-card">

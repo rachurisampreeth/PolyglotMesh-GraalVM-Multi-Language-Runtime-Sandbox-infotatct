@@ -1,9 +1,14 @@
-node_modules/
-dist/
-target/
+# Java
+backend/target/
+backend/data/
+*.class
+# React
+frontend/node_modules/
+frontend/dist/
+# IDE / system
 .idea/
 .vscode/
+.DS_Store
+Thumbs.db
 *.log
-backend/data/
-*.mv.db
 .env

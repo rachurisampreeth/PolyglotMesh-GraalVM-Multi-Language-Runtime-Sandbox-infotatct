@@ -2,7 +2,7 @@ const BASE = (import.meta.env.VITE_API_BASE || '/api').replace(/\/$/, '');
 
 async function request(path, options = {}) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 35000);
+  const timer = setTimeout(() => controller.abort(), 90000);
   try {
     const response = await fetch(`${BASE}${path}`, {
       ...options,

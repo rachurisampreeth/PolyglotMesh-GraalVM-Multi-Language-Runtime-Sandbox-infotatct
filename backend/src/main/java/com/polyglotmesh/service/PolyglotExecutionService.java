@@ -8,6 +8,7 @@ import org.graalvm.polyglot.*;
 import org.graalvm.polyglot.io.IOAccess;
 import org.graalvm.polyglot.proxy.ProxyObject;
 import org.graalvm.polyglot.proxy.ProxyHashMap;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -37,9 +38,9 @@ public class PolyglotExecutionService {
     );
 
     public PolyglotExecutionService(
-        @org.springframework.beans.factory.annotation.Value("${mesh.execution.timeout-ms:10000}") int timeoutMs,
-        @org.springframework.beans.factory.annotation.Value("${mesh.execution.max-code-chars:16000}") int maxCodeChars,
-        @org.springframework.beans.factory.annotation.Value("${mesh.execution.max-output-bytes:32768}") int maxOutputBytes
+        @Value("${mesh.execution.timeout-ms:10000}") int timeoutMs,
+        @Value("${mesh.execution.max-code-chars:16000}") int maxCodeChars,
+        @Value("${mesh.execution.max-output-bytes:32768}") int maxOutputBytes
     ) {
         this.timeoutMs = timeoutMs;
         this.maxCodeChars = maxCodeChars;
@@ -80,7 +81,7 @@ public class PolyglotExecutionService {
         long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
         long heapDeltaKb = Math.max(0L, (usedHeap() - beforeMemory) / 1024);
         return new ExecuteResponse(id, outcome.status(), mode,
-            mode.equals("pipeline") ? "python â†’ javascript" : language,
+            mode.equals("pipeline") ? "python → javascript" : language,
             outcome.output(), outcome.result(), outcome.error(), elapsedMs,
             heapDeltaKb, outcome.steps(), Instant.now());
     }
@@ -116,14 +117,15 @@ public class PolyglotExecutionService {
                     long javaStart = System.nanoTime();
                     // A guest hash proxy exposes Java Map entries to Python as dict keys,
                     // without exposing Java host methods or classes.
-                    Map<Object, Object> pythonInput = new LinkedHashMap<>();
+                    HashMap<Object, Object> pythonInput = new HashMap<>();
                     pythonInput.putAll(input);
                     context.getBindings("python").putMember("input_data", ProxyHashMap.from(pythonInput));
                     steps.add(new ExecutionStep("Java input binding", "java", millisSince(javaStart), "success"));
                     long pythonStart = System.nanoTime();
                     context.eval("python", request.pythonCode());
+                    auditJavaMap(input, pythonInput);
                     steps.add(new ExecutionStep("GraalPy calculation", "python", millisSince(pythonStart), "success"));
-                    Value pyResult = context.getBindings("python").getMember("result");
+                    org.graalvm.polyglot.Value pyResult = context.getBindings("python").getMember("result");
                     String pyValue = stringify(pyResult);
                     context.getBindings("js").putMember("python_result", pyValue);
                     context.getBindings("js").putMember("input_data", ProxyObject.fromMap(input));
@@ -133,8 +135,9 @@ public class PolyglotExecutionService {
                     result = stringify(context.getBindings("js").getMember("result"));
                 } else {
                     String graalLanguage = language.equals("javascript") ? "js" : "python";
+                    HashMap<Object, Object> pythonInput = null;
                     if (graalLanguage.equals("python")) {
-                        Map<Object, Object> pythonInput = new LinkedHashMap<>();
+                        pythonInput = new HashMap<>();
                         pythonInput.putAll(input);
                         context.getBindings("python").putMember("input_data", ProxyHashMap.from(pythonInput));
                     } else {
@@ -142,6 +145,7 @@ public class PolyglotExecutionService {
                     }
                     long stageStart = System.nanoTime();
                     context.eval(graalLanguage, request.code());
+                    if (pythonInput != null) auditJavaMap(input, pythonInput);
                     steps.add(new ExecutionStep("Run " + language, language, millisSince(stageStart), "success"));
                     result = stringify(context.getBindings(graalLanguage).getMember("result"));
                 }
@@ -154,6 +158,17 @@ public class PolyglotExecutionService {
             return new Outcome("error", output.content(), "", message, steps);
         } catch (Exception ex) {
             return new Outcome("error", output.content(), "", safeMessage(ex), steps);
+        }
+    }
+
+    // The same Java HashMap instance is read after Python mutates its proxy.
+    // No JSON conversion or copying occurs at the Java/Python boundary.
+    private void auditJavaMap(Map<String, Object> original, HashMap<Object, Object> shared) {
+        if (!shared.equals(original)) {
+            System.out.println("=== POLYGLOT AUDIT: JAVA READBACK ===");
+            System.out.println("Original Java input: " + original);
+            System.out.println("Java HashMap after Python: " + shared);
+            System.out.println("No JSON serialization between Java and Python.");
         }
     }
 
@@ -186,7 +201,7 @@ public class PolyglotExecutionService {
         if (code.length() > maxCodeChars) throw new IllegalArgumentException(field + " is too long.");
     }
     private String normalizeLanguage(String language) { return language == null ? "" : language.toLowerCase(Locale.ROOT); }
-    private String stringify(Value value) {
+    private String stringify(org.graalvm.polyglot.Value value) {
         if (value == null || value.isNull()) return "(no result variable; use result = ...)";
         try { return value.isString() ? value.asString() : value.toString(); }
         catch (Exception ex) { return "(result unavailable)"; }
@@ -194,7 +209,7 @@ public class PolyglotExecutionService {
     private long usedHeap() { Runtime rt=Runtime.getRuntime(); return rt.totalMemory()-rt.freeMemory(); }
     private long millisSince(long since) { return TimeUnit.NANOSECONDS.toMillis(System.nanoTime()-since); }
     private String safeMessage(Throwable ex) { return truncate(ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage(), 1600); }
-    private String truncate(String value, int max) { return value.length() <= max ? value : value.substring(0, max) + "â€¦"; }
+    private String truncate(String value, int max) { return value.length() <= max ? value : value.substring(0, max) + "…"; }
     @PreDestroy
     public void shutdown() { workers.shutdownNow(); engine.close(); }
 
