@@ -182,3 +182,65 @@
     border-right-color: var(--border);
   }
 }
+
+/* ------------------------------------------------- */
+/* Split‑pane layout (editor | console) */
+/* ------------------------------------------------- */
+
+/* Container that holds both panels */
+.split-pane {
+  display: flex;
+  gap: 1rem;
+  /* Ensure the pane fills the available space */
+  flex-wrap: nowrap;
+  margin-top: 1rem;
+}
+
+/* Left panel – Monaco editor (2 parts of the width) */
+.editor-panel {
+  flex: 2 1 0%;
+  background: #1e1e1e; /* dark background matching app */
+  padding: 1rem;
+  border-radius: 8px;
+  overflow: hidden; /* keep editor contained */
+}
+
+/* Right panel – console output (1 part of the width) */
+.console-panel {
+  flex: 1 1 0%;
+  background: #252526; /* slightly lighter dark for contrast */
+  padding: 1rem;
+  border-radius: 8px;
+  color: #dcdcdc;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-heading {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.console-output {
+  flex: 1;
+  background: #1e1e1e;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+/* Responsive: stack panels vertically on narrow screens */
+@media (max-width: 768px) {
+  .split-pane {
+    flex-direction: column;
+  }
+  .editor-panel,
+  .console-panel {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}
