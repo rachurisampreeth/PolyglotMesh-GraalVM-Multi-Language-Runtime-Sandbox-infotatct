@@ -137,3 +137,58 @@ Returns recent execution log metadata. `limit` is clamped to 1–100. Log entrie
 ## GET /metrics
 
 Returns `total`, `successes`, `failures`, `successRate`, `averageMs`, and `recent` (the most recent 12 execution log entries). Average is calculated over the **latest 40** records and includes cold starts.
+## POST /compare-metrics
+
+Compares in-process GraalVM guest execution with a loopback Mock REST HTTP request.
+
+**Request example:**
+
+```json
+{
+  "execution": {
+    "mode": "single",
+    "language": "javascript",
+    "code": "40 + 2",
+    "input": {}
+  },
+  "iterations": 2
+}
+
+```
+
+The response reports sample count, average, minimum, and maximum execution time for both paths.
+
+- **GraalVM:** Executes guest code in-process through the Polyglot execution service.
+- **Mock REST:** Makes a real local HTTP request to an echo endpoint.
+
+**Important:** Mock REST echoes the supplied input; it does not execute guest code. The workloads are different, so timings are illustrative and do not prove a performance advantage.
+
+## POST /mock-rest/execute
+
+Sends a JSON input to the local HTTP echo endpoint.
+
+**Request example:**
+
+```json
+{
+  "input": {
+    "name": "Shagun",
+    "quantity": 3,
+    "price": 100
+  }
+}
+```
+
+**Example response:**
+
+```json
+{
+  "status": "success",
+  "echoedInput": {
+    "name": "Shagun",
+    "quantity": 3,
+    "price": 100
+  },
+  "implementation": "local-http-echo"
+}
+```
