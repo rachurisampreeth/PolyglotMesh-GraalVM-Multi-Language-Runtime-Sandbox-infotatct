@@ -4,7 +4,8 @@
 
 Based on the Infotact Solutions **Project 1: “PolyglotMesh”: GraalVM Multi-Language Runtime Sandbox** brief. The delivered implementation concentrates on the brief's *core working features*: GraalVM language execution, a Java-to-Python-to-JavaScript data pipeline, a restricted execution context, a Spring Boot API, a React + Monaco IDE, persisted scripts, execution history, and real timing metrics.
 
-> **Status and honesty:** This archive contains complete backend and frontend **source code**, configuration, automated test source and setup documentation. It is not a bundled runnable Windows executable: dependencies must be downloaded by Maven/npm on the first run. The build and Java runtime could **not be compiled/run in the environment used to prepare this archive** because Maven packages could not be downloaded. Run `mvn test` and `npm run build` on your internet-connected machine before presenting it as verified. The app intentionally defaults to localhost only. Do not deploy it as a public arbitrary-code sandbox.
+
+> **Status and verification:** This repository contains backend and frontend source code, configuration, automated tests, and setup documentation. The backend has been verified locally with successful Maven test runs, including Polyglot execution, concurrency, and comparison service tests. The health, Mock REST, and Compare Metrics API endpoints have also been tested successfully. Frontend build verification should be performed separately using `npm run build`. The application is intended for localhost use only and is not a hardened public sandbox for arbitrary untrusted code.
 
 ## Features
 
@@ -153,6 +154,8 @@ A fresh GraalVM `Context` is created for each call; it is not reused between use
 | DELETE | `/api/snippets/{id}` | Delete saved script |
 | GET | `/api/history?limit=20` | Recent execution metadata |
 | GET | `/api/metrics` | Totals, success rate and recent latency |
+| POST | `/api/compare-metrics` | Compare in-process GraalVM execution with a loopback Mock REST request |
+| POST | `/api/mock-rest/execute` | Execute a local HTTP echo request for comparison measurements |
 
 See **`docs/API.md`** for request/response bodies and test commands.
 
@@ -213,6 +216,16 @@ Frontend uses Vite's development proxy (`/api` → `http://127.0.0.1:7071`). For
 5. Python and JS execution occurs in the same Java process, but **not** with an isolated Native Image sandbox. Run locally with trusted scripts; do not accept arbitrary untrusted users.
 6. First-time GraalPy initialization can be slow. Warm up with a simple Python run before performance demonstrations.
 7. No dependency binaries or `node_modules` are included in the zip. Maven and npm downloads occur on the first setup; a network connection is needed.
+
+## Performance comparison notes
+
+The `/api/compare-metrics` endpoint measures two paths:
+
+- **GraalVM:** In-process guest execution through the existing Polyglot execution service.
+- **Mock REST:** A real loopback HTTP request to a local echo endpoint.
+
+The comparison reports sample count, average, minimum, and maximum execution time. The Mock REST endpoint echoes input; it does not execute guest code. Therefore, the two workloads are different and their timings should be treated as illustrative measurements, not proof of a performance advantage.
+
 
 ## Attribution
 
