@@ -7,7 +7,11 @@ function App() {
   const [activeLang, setActiveLang] = useState('python');
   // Execution state
   const [running, setRunning] = useState(false);
+  const [status, setStatus] = useState('Ready');
   const [output, setOutput] = useState('');
+  const [jsonInput, setJsonInput] = useState('{\n  "name": "PolyglotMesh"\n}');
+  const [showErrorDetails, setShowErrorDetails] = useState(false);
+  const [errorDetails, setErrorDetails] = useState('');
 
   // Code for each language
   const [pythonCode, setPythonCode] = useState(`def greet(name):
@@ -26,6 +30,9 @@ function App() {
 greet("PolyglotMesh");`);
 
   // Helper to retrieve the code for the active tab
+  const getActiveLanguage = () => {
+  return activeLang;
+};
   const getCode = () => {
     switch (activeLang) {
       case 'java':
@@ -52,8 +59,19 @@ greet("PolyglotMesh");`);
   };
 
   // Simulated Run button – shows dummy output after a short delay
-  const runCode = () => {
-    const code = getCode();
+  // Simulated Run button – shows dummy output after a short delay
+const runCode = () => {
+  const code = getCode();
+
+  let parsedInput;
+
+  try {
+    parsedInput = JSON.parse(jsonInput);
+  } catch (error) {
+    setOutput('Invalid JSON: ' + error.message);
+    setStatus('Error');
+    return;
+  }
     // Validate code presence
     if (!code.trim()) {
       setRunning(true);
@@ -62,6 +80,10 @@ greet("PolyglotMesh");`);
       return;
     }
     setRunning(true);
+    setStatus('Running');
+    
+    setErrorDetails('');
+    setShowErrorDetails(false);
     setOutput('');
     try {
       setTimeout(() => {
@@ -76,13 +98,22 @@ greet("PolyglotMesh");`);
           default:
             result = 'Python output:\ndef greet(name):\n    print("Hello, " + name)\n\n    greet("PolyglotMesh")';
         }
-        setOutput(result);
+       setOutput(
+       result + '\n\nJSON Input: ' + JSON.stringify(parsedInput, null, 2)
+);
       }, 1000);
     } catch (err) {
-      setOutput(`Error: ${err.message}`);
-    } finally {
+     setStatus('Error');
+     setErrorDetails(err.stack || err.message);
+     setShowErrorDetails(true);
+     setOutput(`Error: ${err.message}`);
+    }
+     finally {
       // Ensure running flag reset after async timeout
-      setTimeout(() => setRunning(false), 1000);
+      setTimeout(() => {
+     setRunning(false);
+     setStatus('Ready');
+      }, 1000);
     }
 
 
@@ -93,6 +124,9 @@ greet("PolyglotMesh");`);
       <div className="split-pane">
         {/* Left / Main panel: tabs + editor + Run button */}
         <div className="editor-panel">
+        <div className="status-badge">
+       Status: {status}
+       </div>
           <div className="tabs" style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
             {['python', 'java', 'javascript'].map((lang) => (
               <button
@@ -130,6 +164,23 @@ greet("PolyglotMesh");`);
         {/* Right / Console panel */}
         <div className="console-panel">
           <h2 className="console-heading" style={{ marginTop: 0, marginBottom: '0.5rem' }}>Console Output</h2>
+          <h3>JSON Input</h3>
+          <p>Active Language: {getActiveLanguage()}</p>
+        <textarea
+        value={jsonInput}
+        onChange={(e) => setJsonInput(e.target.value)}
+        placeholder="Enter JSON input here..."
+        rows={5}
+       style={{
+        width: '100%',
+       padding: '10px',
+       background: '#1e1e1e',
+       color: '#fff',
+       border: '1px solid #555',
+      borderRadius: '5px',
+      marginBottom: '10px',
+  }}
+/>
           <button
             onClick={() => setOutput('')}
             style={{
@@ -145,9 +196,21 @@ greet("PolyglotMesh");`);
           >
             Clear
           </button>
-          <div className="console-output">
+                    <div className="console-output">
             {output || 'Output will appear here after execution.'}
           </div>
+
+          {errorDetails && (
+            <div className="error-details">
+              <button onClick={() => setShowErrorDetails(!showErrorDetails)}>
+                {showErrorDetails ? 'Hide Error Details' : 'Show Error Details'}
+              </button>
+
+              {showErrorDetails && (
+                <pre>{errorDetails}</pre>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
