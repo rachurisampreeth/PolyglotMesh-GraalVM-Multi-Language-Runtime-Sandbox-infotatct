@@ -53,23 +53,39 @@ greet("PolyglotMesh");`);
 
   // Simulated Run button – shows dummy output after a short delay
   const runCode = () => {
+    const code = getCode();
+    // Validate code presence
+    if (!code.trim()) {
+      setRunning(true);
+      setOutput('Please enter code before running.');
+      setRunning(false);
+      return;
+    }
     setRunning(true);
     setOutput('');
-    setTimeout(() => {
-      let result;
-      switch (activeLang) {
-        case 'java':
-          result = 'Java output:\nHello PolyglotMesh';
-          break;
-        case 'javascript':
-          result = 'JavaScript output:\nHello PolyglotMesh';
-          break;
-        default:
-          result = 'Python output:\ndef greet(name):\n    print("Hello, " + name)\n\n    greet("PolyglotMesh")';
-      }
-      setOutput(result);
-      setRunning(false);
-    }, 1000);
+    try {
+      setTimeout(() => {
+        let result;
+        switch (activeLang) {
+          case 'java':
+            result = 'Java output:\nHello PolyglotMesh';
+            break;
+          case 'javascript':
+            result = 'JavaScript output:\nHello PolyglotMesh';
+            break;
+          default:
+            result = 'Python output:\ndef greet(name):\n    print("Hello, " + name)\n\n    greet("PolyglotMesh")';
+        }
+        setOutput(result);
+      }, 1000);
+    } catch (err) {
+      setOutput(`Error: ${err.message}`);
+    } finally {
+      // Ensure running flag reset after async timeout
+      setTimeout(() => setRunning(false), 1000);
+    }
+
+
   };
 
   return (
