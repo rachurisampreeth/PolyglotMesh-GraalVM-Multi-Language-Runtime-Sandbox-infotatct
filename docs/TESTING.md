@@ -84,6 +84,17 @@ With `{ "quantity": 4 }`, expect `JS received 20`.
 
 A failed `Java.type` call checks one restricted capability only. It is **not** proof of sandbox completeness. The timeout is best effort and hard memory/CPU quotas are absent. Do not test with aggressive memory-exhaustion code on a machine with important unsaved work.
 
-## Build provenance
+## Local verification record — 24 November 2026
 
-The files were produced by code generation and static inspection. The environment used to package this project does not have Maven artifacts/npm packages available and cannot access package registries; therefore a full JDK/GraalVM/npm integration build and GUI click-test **could not be completed before packaging**. This checklist is the proper way to verify the project on your own system before submission.
+The following backend checks were completed locally:
+
+- `mvn test` completed with **BUILD SUCCESS**.
+- `GET /api/health` returned `status: UP`.
+- The health response identified GraalVM Polyglot with Python and JavaScript support.
+- `POST /api/mock-rest/execute` returned the expected echoed input.
+- `POST /api/compare-metrics` returned timing statistics for both execution paths.
+- `ComparisonServiceTest` passed.
+
+**Not yet verified in this record:** A fresh frontend `npm run build` and automated browser interaction tests.
+
+These results describe the local development environment and should not be interpreted as proof of production-grade sandbox security.
