@@ -1,14 +1,17 @@
-# Java
-backend/target/
-backend/data/
+**/target/
+**/node_modules/
+**/dist/
+**/.DS_Store
+**/.env
+**/data/
+*.log
 *.class
-# React
-frontend/node_modules/
-frontend/dist/
-# IDE / system
+*.exe
+*.dll
+*.so
+*.dylib
+.DS_Store
 .idea/
 .vscode/
-.DS_Store
-Thumbs.db
-*.log
-.env
+docs/results/*.csv
+!docs/results/.gitkeep

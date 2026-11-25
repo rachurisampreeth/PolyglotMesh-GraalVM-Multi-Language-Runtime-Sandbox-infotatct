@@ -1,34 +1,20 @@
-# Security Model — Read Before Deploying
+# Sandbox Security Review (educational only)
 
-This is an **educational, local-only** polyglot IDE, **not** a production arbitrary-code execution sandbox.
+| Control | Implementation | Important limitation |
+|---|---|---|
+| File I/O | `IOAccess.NONE` | Test actual GraalPy/JS behavior on the target runtime. |
+| Host class access | `allowHostClassLookup(false)` | Guest Proxy objects are intentionally limited to safe operations. |
+| Host native/process/thread | `allowNativeAccess(false)`, `allowCreateProcess(false)`, `allowCreateThread(false)` | Does not create an OS sandbox. |
+| Java host access | `HostAccess.NONE` | `db.find()` and the HashMap audit use explicit Graal proxy APIs, not general Java reflection. |
+| Network | `IOAccess.NONE`, no guest direct network | Java host's comparison HTTP client is separate and authorized. |
+| Infinite loops | Future timeout + `context.close(true)` + `ResourceLimits.statementLimit` | Certain blocking host operations can resist cancellation; worker saturation requires monitoring. |
+| Output spam | bounded `CappedStream` buffers | Truncates only; it does not enforce a total guest heap budget. |
+| Concurrency | 4-worker bounded pool, 16 pending | Prevents unlimited queued scripts; users may still overwhelm the JVM without OS quotas. |
+| Code size | ≤16,000 UTF-16 characters | Input JSON size limits should additionally be configured at gateway. |
+| Audit log | ID, language, status and timing only | Does not persist guest source or input in H2 by default. |
 
-## Implemented guardrails
+**Known residual risk:** The `huge_list.py` stress case may exhaust Java process memory. Run it only inside isolated resource-limited environment; the QA helper intentionally **skips** it. This exercise does not claim production-safe multi-tenant code execution.
 
-- API binds to `127.0.0.1` by default instead of the public network.
-- New `Context` for each run; guest variable state is not deliberately reused between executions.
-- GraalVM guest context has `HostAccess.NONE`, disallows host class lookup, denies host IO/filesystem/network, process creation, native access and guest-created threads.
-- Simple flat input object with a fixed key/value size cap rather than arbitrary Java objects or class references.
-- Output is bounded to 32 KiB, source to 16,000 characters per code stage.
-- Run jobs have a wall-clock timeout (default 10 seconds), and Java attempts context cancellation on timeout.
-- Execution thread pool contains two workers plus a bounded queue of eight pending jobs.
+**Recommended production architecture**: authenticated API, per-request ephemeral container/VM or sandboxed OS process, unprivileged user, readonly mount, no network policy, cgroup CPU/RAM/IO limits, process watchdog, strict H2/data access policy, rate limiting, secretless execution, observability, and independent security review.
 
-## What this does NOT guarantee
-
-- **Not a hardened security boundary.** The default GraalVM context policy and host permission flags are insufficient alone to safely execute hostile code in a public multi-user service. GraalVM offers stronger sandbox policies and isolate resource options, which require separate implementation and testing.
-- **No reliable hard memory or CPU quota.** Java's heap delta is only a rough process-wide observation. A script that consumes huge memory may exhaust the JVM before a timeout is enforced.
-- **Cancellation is best effort.** Native work or guest execution away from cancellation safepoints might not terminate instantly. JVM-wide denial of service is still possible.
-- **No authentication, TLS, CSRF protection or user accounts.** Anyone able to reach the bound API could issue runs and view/save local scripts.
-- **H2 and result previews are not encrypted at rest.** Do not submit private data or credentials through the editor.
-- **Sandbox rules may differ between GraalVM versions or engines.** Always run negative tests and validate security settings for the exact dependency versions and platform.
-
-## Appropriate use
-
-Use on your own laptop, in a trusted local classroom demonstration, or in a private development environment for code you wrote yourself. Do **not** change `SERVER_ADDRESS` to `0.0.0.0`, publish port 7071, or host on a shared public server without a separate hardened architecture and security review.
-
-For stronger isolation, investigate the GraalVM sandboxing guide and resource limits, purpose-built worker processes, OS-enforced quotas, permission allowlists, and a deliberately minimal network surface. Do not claim that a blocked `Java.type` attempt proves full security.
-
-Useful reading:
-
-- GraalVM security guide: https://www.graalvm.org/latest/security-guide/sandboxing/
-- GraalVM Polyglot embedding guide: https://www.graalvm.org/reference-manual/embed-languages/
-- GraalPy JVM embedding: https://graalpy.org/jvm-developers/docs/
+Any demonstration of a denied action should validate absence of side effects, not merely an error label.

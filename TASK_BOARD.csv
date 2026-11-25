@@ -1,0 +1,81 @@
+owner,day,task,prepared_asset_or_evidence,verification_status,actual_result,evidence_link,notes
+Sampreeth,1,"Install GraalVM; create repository, feature branches, CONTRACTS.md and invite teammates",CONTRACTS.md; repo creation MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,2,Add GraalPy/GraalJS dependencies and hello scripts,backend/pom.xml; samples/good/,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,3,Polyglot execution for Python/JS with output capture,runtime/PolyglotRunner.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,4,Block host file/native/thread/class access; file-read proof,runtime/PolyglotRunner.java; tests/test_cases.csv,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,5,"Timeout watchdog, statement limit, output cap, infinite-loop test",runtime/PolyglotRunner.java; PolyglotRunnerTest.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,6,"Java HashMap audit via Python, no JSON bridge, test",runtime/PolyglotRunner.java; PolyglotRunnerTest.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,7,"Shared Engine, fresh Context per request, JS sandbox",runtime/PolyglotRunner.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,8,Review PRs and repeat timeout test multiple times,PolyglotRunnerTest.java; PR merges MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,9,Full integration and bug fixing,backend/src/test; scripts/api_regression.py,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,10,"Merge main, tag v0.5, mid-review rehearsal",slides/mid_review.pptx; merge/tag/rehearsal MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,11,Native Image plugin spike + feasibility decision,backend/pom.xml; docs/NATIVE_BUILD.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,12,"Native build fixes, reflection hints",config/AotHints.java; docs/NATIVE_BUILD.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,13,"Native full build OR smaller JS fallback, compare startup",fallback-native-js/; scripts/startup_benchmark.py; native build MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,14,Warm-up and engine reuse performance tuning,Shared Engine; docs/PERFORMANCE.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,15,Merge and tag v0.7,release/tag MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,16,MongoMock Java object db.find(),data/MongoMock.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,17,Pricing demo Java data -> Python price -> JS validation,runtime/PolyglotRunner.java mode=pipeline,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,18,Security review and repeat complete attack list,samples/attacks/; scripts/api_regression.py,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,19,Final native build and blockers,Native compile requires local toolchain,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Sampreeth,20,Tag v1.0 and rehearse review,slides/final_review.pptx; release MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,1,Spring Boot WebFlux Maven app and hello endpoint,PolyglotMeshApplication.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,2,Stub POST /api/execute and CORS contract,api/WorkspaceController.java; config/WebConfig.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,3,Integrate PolyglotRunner and boundedElastic,api/WorkspaceController.java; boundedElastic,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,4,"Error response model, global exception handler and validation HTTP400",api/ApiErrors.java; service/SnippetService.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,5,Outcome statuses OK ERROR TIMEOUT SANDBOX_VIOLATION,api/Models.java; runtime/PolyglotRunner.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,6,HashMap audit endpoint/mode and JSON guest input,runtime/PolyglotRunner.java mode=audit,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,7,"WebTestClient integration tests, request logging",ApiIntegrationTest.java; logs,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,8,Concurrency limit and health endpoint,runtime/PolyglotRunner.java worker pool; /api/health,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,9,Fix backend bugs,backend tests,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,10,Back up build and API documentation,CONTRACTS.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,11,Mock /mock/price with artificial delay,api/WorkspaceController.java /mock/price,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,12,Compare same pricing logic via polyglot and HTTP,service/ComparisonService.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,13,Persist last N comparison results /api/metrics/history,api/WorkspaceController.java /api/metrics/history; H2,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,14,Fix comparison/metrics bugs,backend tests,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,15,Buffer for bug fixes,reserve for debugging,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,16,Create products/orders mock /api/data endpoints,data/MongoMock.java; api/WorkspaceController.java,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,17,H2/JPA snippets CRUD,service/SnippetService.java + JPA,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,18,Snippet version check or delete validation,service/SnippetService.java expectedVersion,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,19,Final API docs and fixes,CONTRACTS.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Shagun,20,Backend demo/rehearsal,slides/final_review.pptx; rehearsal MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,1,Create Vite React app with Monaco editor,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,2,Python Monaco syntax highlighting,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,3,Java/Python/JS tabs retaining code/highlighting,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,4,Split pane editor + output console,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,5,"Run button /api/execute, result, loading spinner",frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,6,"Red errors, collapsible stack, status badge",frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,7,JSON input panel and active language binding,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,8,Add/rename tabs and backend-down message,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,9,UI bug fixes,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,10,Polish mid-review UI,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,11,Execution metric cards,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,12,Comparison API chart,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,13,Live polling of metrics,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,14,Metrics dashboard styling,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,15,Buffer for bug fixes,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,16,Data explorer panel for collections/docs,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,17,Saved scripts Save/Load UI + sidebar,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,18,"Ctrl+Enter, empty and loading states",frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,19,Final UI fixes,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Aastha,20,Frontend review/rehearsal,frontend/src/App.jsx; frontend/src/styles.css,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,1,Install JDK Node Postman VS Code; invite and task board,TASK_BOARD.csv; setup local tools MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,2,Copy five scripts + README setup,samples/good/; README.md,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,3,"Import Postman requests, test endpoints, log pass/fail",postman/; tests/test_cases.csv; execution MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,4,Prepare ten malicious/invalid scripts,samples/attacks/,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,5,Run attack suite and log results,scripts/api_regression.py; actual results MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,6,Test UI five good/five bad and screenshots/bugs,frontend/src/App.jsx; screenshots MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,7,Write case table input/expected/actual,tests/test_cases.csv,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,8,Draft mid-review slides,slides/mid_review.pptx,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,9,Run full test document/update bug sheet,tests/test_cases.csv; result entry MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,10,"Screenshots, demo script and mid-review slides",docs/DEMO_SCRIPT.md; screenshots MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,11,Benchmark checklist and result sheet,docs/PERFORMANCE.md; test_cases.csv,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,12,Ten comparison runs and recording,scripts/compare_ten.py; run MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,13,JVM vs native startup screenshots,scripts/startup_benchmark.py; screenshots MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,14,Week 3 testing documentation,tests/test_cases.csv,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,15,Regression and bug sheet,tests/test_cases.csv; run MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,16,Sample products/prices JSON data,samples/sample_products.json,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,17,Test Save/Load UI,frontend/src/App.jsx; manual run,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,18,Full regression test,scripts/api_regression.py; run MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,19,Final README/screenshots/demo recording,README.md; docs/DEMO_SCRIPT.md; record MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed
+Fazal,20,Finalize slides and submit,slides/final_review.pptx; submit MANUAL,PENDING_ON_MACHINE,,,No actual GitHub/admin/test evidence claimed

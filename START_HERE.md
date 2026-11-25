@@ -1,30 +1,12 @@
-# 🚀 START HERE — PolyglotMesh
+# START HERE — PolyglotMesh fresh project
 
-You have a full-stack **Java + GraalVM + React** development studio. It lets you write **Python** and **JavaScript** in a browser and execute them as guest languages in the **same Java process**.
+1. Extract the ZIP to a new folder (it does not overwrite your existing project).
+2. Read `README.md` for system requirements and run commands; `docs/SETUP.md` gives a first-day walkthrough.
+3. Run `mvn clean test` then `mvn spring-boot:run` inside `backend` using matching GraalVM JDK25.
+4. Run `npm install` then `npm run dev` inside `frontend`; open `http://localhost:7070`.
+5. Test using `postman/PolyglotMesh.postman_collection.json` and `tests/test_cases.csv`.
+6. Follow the assigned 80 tasks in `TASK_BOARD.csv`, fill observed outcomes and screenshots.
+7. Read `docs/NATIVE_BUILD.md` before attempting native image; no binary was prebuilt in this environment.
+8. `slides/mid_review.pptx` and `slides/final_review.pptx` are prepared decks that require **real screenshots and verified benchmark evidence**.
 
-## 3-minute checklist
-
-**Install once:** Java **21+**, Maven **3.9+**, Node.js **20.19+ or 22.12+**. Internet is required for the first Maven/npm dependency download.
-
-**Terminal 1 — backend**
-
-```bat
-cd /d C:\Projects\PolyglotMesh\backend
-mvn spring-boot:run
-```
-
-**Terminal 2 — frontend**
-
-```bat
-cd /d C:\Projects\PolyglotMesh\frontend
-npm install
-npm run dev
-```
-
-**Open:** http://localhost:7070 (or the URL shown by Vite).
-
-**Test:** Click **Dynamic pricing engine** → **Run code**. Check the Python output, JavaScript validation and final JSON result in the console. Change a price in **Input context** and run again. Save the script, then open **Execution history** and **Performance**.
-
-**More help:** `docs/WINDOWS_SETUP.md` explains installing tools, setting PATH, running commands and troubleshooting. `docs/DEMO_PRESENTATION.md` gives a 5-minute project demonstration script.
-
-**Build note:** The source was assembled and statically inspected, but not run end-to-end in the packaging environment (external dependency downloads unavailable). Run `mvn test` and `npm run build` locally. This is a **local development demo**, not a production-security sandbox.
+**Important**: This is a comprehensive, original source package, not proof that every 20-day task is complete. Team invites, merges, real tests, native builds, recordings and submission require actual on-machine and human actions. See `IMPLEMENTATION_STATUS.md` and `RELEASE_CHECKLIST.md`.
