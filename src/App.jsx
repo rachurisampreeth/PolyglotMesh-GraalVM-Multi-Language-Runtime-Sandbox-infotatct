@@ -4,7 +4,6 @@ import './App.css';
 import MonacoEditor from './components/MonacoPythonEditor';
 
 function App() {
-  // Language selection
   const [activeLang, setActiveLang] = useState('python');
 
   const [languageNames, setLanguageNames] = useState({
@@ -14,7 +13,6 @@ function App() {
     c: 'C'
   });
 
-  // Execution state
   const [running, setRunning] = useState(false);
   const [status, setStatus] = useState('Ready');
   const [output, setOutput] = useState('');
@@ -22,7 +20,6 @@ function App() {
   const [showErrorDetails, setShowErrorDetails] = useState(false);
   const [errorDetails, setErrorDetails] = useState('');
 
-  // Code for each language
   const [pythonCode, setPythonCode] = useState(`def greet(name):
     print("Hello, " + name)
 
@@ -47,24 +44,15 @@ int main() {
     return 0;
 }`);
 
-  // Active language
-  const getActiveLanguage = () => activeLang;
-
-  // Get code for selected language
   const getCode = () => {
     switch (activeLang) {
-      case 'java':
-        return javaCode;
-      case 'javascript':
-        return jsCode;
-      case 'c':
-        return cCode;
-      default:
-        return pythonCode;
+      case 'java': return javaCode;
+      case 'javascript': return jsCode;
+      case 'c': return cCode;
+      default: return pythonCode;
     }
   };
 
-  // Update code for selected language
   const setCode = (value) => {
     switch (activeLang) {
       case 'java':
@@ -81,7 +69,6 @@ int main() {
     }
   };
 
-  // Rename selected tab
   const renameTab = () => {
     const newName = prompt('Enter new tab name:');
 
@@ -93,7 +80,6 @@ int main() {
     }
   };
 
-  // Run button
   const runCode = () => {
     const code = getCode();
 
@@ -155,157 +141,135 @@ int main() {
   };
 
   return (
-    <div
-      className="app-container"
-      style={{
-        padding: '1rem',
-        backgroundColor: '#1e1e1e',
-        minHeight: '100vh',
-        color: '#fff'
-      }}
-    >
-      <div className="split-pane">
+    <div className="app-container">
 
-        {/* Left / Main panel */}
-        <div className="editor-panel">
+      <header className="app-header">
+        <div className="brand">
+          <div className="brand-icon">PM</div>
+          <div>
+            <h1>PolyglotMesh</h1>
+            <p>Multi-Language Code Editor</p>
+          </div>
+        </div>
 
-          <div className="status-badge">
-            Status: {status}
+        <div className="header-tag">
+          <span className="online-dot"></span>
+          Frontend Demo
+        </div>
+      </header>
+
+      <main className="workspace">
+
+        <section className="editor-panel">
+
+          <div className="panel-top">
+            <div>
+              <h2>Code Editor</h2>
+              <p>Write and manage your code</p>
+            </div>
+
+            <div className={`status-badge ${status.toLowerCase()}`}>
+              <span className="status-dot"></span>
+              {status}
+            </div>
           </div>
 
-          {/* Backend status message */}
-          <div
-            style={{
-              background: '#3b2f1f',
-              color: '#ffcc80',
-              padding: '10px',
-              borderRadius: '5px',
-              marginBottom: '10px'
-            }}
-          >
+          <div className="demo-message">
+            <span>ⓘ</span>
             Backend is not connected yet. Running in Demo Mode.
           </div>
 
-          <div
-            className="tabs"
-            style={{
-              marginBottom: '1rem',
-              display: 'flex',
-              gap: '0.5rem'
-            }}
-          >
-            {['python', 'java', 'javascript', 'c'].map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setActiveLang(lang)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: activeLang === lang ? '#333' : '#555',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                {languageNames[lang]}
-              </button>
-            ))}
+          <div className="editor-toolbar">
+            <div className="tabs">
+              {['python', 'java', 'javascript', 'c'].map((lang) => (
+                <button
+                  key={lang}
+                  className={`tab-button ${activeLang === lang ? 'active' : ''}`}
+                  onClick={() => setActiveLang(lang)}
+                >
+                  {languageNames[lang]}
+                </button>
+              ))}
+            </div>
+
+            <button className="rename-button" onClick={renameTab}>
+              ✎ Rename Tab
+            </button>
           </div>
 
-          <button
-            onClick={renameTab}
-            style={{
-              marginBottom: '1rem',
-              padding: '0.5rem 1rem',
-              background: '#1976d2',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Rename Tab
-          </button>
+          <div className="monaco-wrapper">
+            <MonacoEditor
+              language={activeLang}
+              code={getCode()}
+              onChange={setCode}
+            />
+          </div>
 
-          <MonacoEditor
-            language={activeLang}
-            code={getCode()}
-            onChange={setCode}
-          />
+          <div className="editor-footer">
+            <span>Editing: {languageNames[activeLang]}</span>
 
-          <button
-            onClick={runCode}
-            style={{
-              marginTop: '0.5rem',
-              padding: '0.5rem 1rem',
-              background: '#4caf50',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-            disabled={running}
-          >
-            {running ? 'Running…' : 'Run'}
-          </button>
-        </div>
+            <button
+              className="run-button"
+              onClick={runCode}
+              disabled={running}
+            >
+              {running ? '◌ Running...' : '▶ Run Code'}
+            </button>
+          </div>
 
-        {/* Right / Console panel */}
-        <div className="console-panel">
+        </section>
 
-          <h2
-            className="console-heading"
-            style={{ marginTop: 0, marginBottom: '0.5rem' }}
-          >
-            Console Output
-          </h2>
+        <aside className="console-panel">
 
-          <h3>JSON Input</h3>
+          <div className="panel-top">
+            <div>
+              <h2>Console Output</h2>
+              <p>View your program output</p>
+            </div>
+            <span className="console-icon">⌘</span>
+          </div>
 
-          <p>Active Language: {getActiveLanguage()}</p>
+          <div className="language-info">
+            <span className="language-indicator"></span>
+            Active Language: <strong>{languageNames[activeLang]}</strong>
+          </div>
+
+          <div className="section-heading">
+            <h3>JSON Input</h3>
+            <span>INPUT</span>
+          </div>
 
           <textarea
+            className="json-input"
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
             placeholder="Enter JSON input here..."
-            rows={5}
-            style={{
-              width: '100%',
-              padding: '10px',
-              background: '#1e1e1e',
-              color: '#fff',
-              border: '1px solid #555',
-              borderRadius: '5px',
-              marginBottom: '10px'
-            }}
+            rows={6}
           />
 
-          <button
-            onClick={() => setOutput('')}
-            style={{
-              marginBottom: '0.5rem',
-              padding: '0.3rem 0.8rem',
-              background: '#555',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-            disabled={running}
-          >
-            Clear
-          </button>
+          <div className="output-heading">
+            <h3>Program Output</h3>
 
-          <div className="console-output">
-            {output || 'Output will appear here after execution.'}
+            <button
+              className="clear-button"
+              onClick={() => setOutput('')}
+              disabled={running}
+            >
+              Clear
+            </button>
+          </div>
+
+          <div className={`console-output ${output ? 'has-output' : ''}`}>
+            {output || 'Your output will appear here after running the code.'}
           </div>
 
           {errorDetails && (
             <div className="error-details">
               <button
+                className="error-toggle"
                 onClick={() => setShowErrorDetails(!showErrorDetails)}
               >
-                {showErrorDetails ? 'Hide Error Details' : 'Show Error Details'}
+                {showErrorDetails ? 'Hide Error Details −' : 'Show Error Details +'}
               </button>
 
               {showErrorDetails && (
@@ -314,8 +278,20 @@ int main() {
             </div>
           )}
 
-        </div>
-      </div>
+          <div className="console-footer">
+            <span className="online-dot"></span>
+            Demo Environment
+          </div>
+
+        </aside>
+
+      </main>
+
+      <footer className="app-footer">
+        <span>PolyglotMesh</span>
+        <span>Multi-Language Development Workspace</span>
+      </footer>
+
     </div>
   );
 }
