@@ -241,3 +241,13 @@ Do not run two copies of the Java backend against the same `backend/data/` direc
 7. Run `mvn test` and `npm run build` before a demonstration.
 
 **For security considerations:** `docs/SECURITY.md`. **For the exact JSON API:** `docs/API.md`. **For a ready demo script:** `docs/DEMO_PRESENTATION.md`.
+
+## 14. Backend environment configuration
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| PORT | 7071 | Spring Boot HTTP port |
+| EXECUTION_TIMEOUT_MS | 60000 | Execution timeout in milliseconds (60 seconds) |
+| SERVER_ADDRESS | 127.0.0.1 | Local bind address; do not expose the code-execution backend publicly |
+
+Set these variables in the terminal before starting the backend. If PORT changes, update the frontend Vite proxy target. See docs/SECURITY.md before changing the default bind address.
