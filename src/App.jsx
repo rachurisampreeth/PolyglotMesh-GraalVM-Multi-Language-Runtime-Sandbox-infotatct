@@ -80,6 +80,18 @@ int main() {
     }
   };
 
+  // Copy console output
+  const copyOutput = async () => {
+    if (!output) return;
+
+    try {
+      await navigator.clipboard.writeText(output);
+      alert('Output copied successfully!');
+    } catch (error) {
+      alert('Unable to copy output.');
+    }
+  };
+
   const runCode = () => {
     const code = getCode();
 
@@ -250,13 +262,23 @@ int main() {
           <div className="output-heading">
             <h3>Program Output</h3>
 
-            <button
-              className="clear-button"
-              onClick={() => setOutput('')}
-              disabled={running}
-            >
-              Clear
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                className="clear-button"
+                onClick={copyOutput}
+                disabled={!output || running}
+              >
+                Copy Output
+              </button>
+
+              <button
+                className="clear-button"
+                onClick={() => setOutput('')}
+                disabled={running}
+              >
+                Clear
+              </button>
+            </div>
           </div>
 
           <div className={`console-output ${output ? 'has-output' : ''}`}>
