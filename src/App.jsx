@@ -20,29 +20,36 @@ function App() {
   const [showErrorDetails, setShowErrorDetails] = useState(false);
   const [errorDetails, setErrorDetails] = useState('');
 
-  const [pythonCode, setPythonCode] = useState(`def greet(name):
+  const defaultCode = {
+    python: `def greet(name):
     print("Hello, " + name)
 
-greet("PolyglotMesh")`);
+greet("PolyglotMesh")`,
 
-  const [javaCode, setJavaCode] = useState(`public class Main {
+    java: `public class Main {
     public static void main(String[] args) {
         System.out.println("Hello PolyglotMesh");
     }
-}`);
+}`,
 
-  const [jsCode, setJsCode] = useState(`function greet(name) {
+    javascript: `function greet(name) {
     console.log("Hello, " + name);
 }
 
-greet("PolyglotMesh");`);
+greet("PolyglotMesh");`,
 
-  const [cCode, setCCode] = useState(`#include <stdio.h>
+    c: `#include <stdio.h>
 
 int main() {
     printf("Hello PolyglotMesh");
     return 0;
-}`);
+}`
+  };
+
+  const [pythonCode, setPythonCode] = useState(defaultCode.python);
+  const [javaCode, setJavaCode] = useState(defaultCode.java);
+  const [jsCode, setJsCode] = useState(defaultCode.javascript);
+  const [cCode, setCCode] = useState(defaultCode.c);
 
   const getCode = () => {
     switch (activeLang) {
@@ -78,6 +85,21 @@ int main() {
         [activeLang]: newName.trim()
       });
     }
+  };
+
+  // Reset current language code
+  const resetCode = () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to reset ${languageNames[activeLang]} code?`
+    );
+
+    if (!confirmed) return;
+
+    setCode(defaultCode[activeLang]);
+    setOutput('');
+    setErrorDetails('');
+    setShowErrorDetails(false);
+    setStatus('Ready');
   };
 
   // Copy console output
@@ -220,13 +242,23 @@ int main() {
           <div className="editor-footer">
             <span>Editing: {languageNames[activeLang]}</span>
 
-            <button
-              className="run-button"
-              onClick={runCode}
-              disabled={running}
-            >
-              {running ? '◌ Running...' : '▶ Run Code'}
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                className="clear-button"
+                onClick={resetCode}
+                disabled={running}
+              >
+                ↺ Reset Code
+              </button>
+
+              <button
+                className="run-button"
+                onClick={runCode}
+                disabled={running}
+              >
+                {running ? '◌ Running...' : '▶ Run Code'}
+              </button>
+            </div>
           </div>
 
         </section>
